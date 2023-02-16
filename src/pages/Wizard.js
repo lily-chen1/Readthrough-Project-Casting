@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Stepper, Step } from "react-form-stepper";
 import StepWizard from "react-step-wizard";
 import { Row, Col, Button, FormGroup, Label, Input } from "reactstrap";
-import Select from 'react-select';
+import Select from "react-select";
 import Multiselect from "multiselect-react-dropdown";
-
 
 const ActionButtons = (props) => {
   const handleBack = () => {
@@ -41,79 +40,50 @@ const ActionButtons = (props) => {
 };
 
 const One = (props) => {
-	const [error, setError] = useState("");
-	const options = [
-		{ name: 'agent1', label: 'Agent 1' },
-		{ name: 'agent2', label: 'Agent 2' },
-		{ name: 'agent3', label: 'Agent 3' }
-	  ]
-	  
-	  const [selectedOption, setSelectedOption] = useState([]);
-	  const handleChange = (options) => {
-		setSelectedOption(options);
-	  };
-  
-
-	const validate = () => {
-		if (!selectedOption.name) setError("Agent is mandatory field");
-		else {
-			setError("");
-			props.nextStep();
-			props.userCallback(selectedOption);
-		}
-	};
-
-	return (
-		<div>
-		<span style={{ color: "red" }}>{error}</span>
-		<h1>Select an Actor</h1>
-		<FormGroup>
-			<Label>Name: </Label>
-			<Select options={options} onChange={handleChange}/>
-		</FormGroup>
-		<br />
-		<ActionButtons {...props} nextStep={validate} />
-		{/* <ActionButtons {...props} nextStep={validate} /> */}
-		</div>
-  );
-};
-
-const Two = (props) => {
   const [error, setError] = useState("");
 
   const characters = [
-	{ character: 'chara1', label: 'Character 1' },
-	{ character: 'chara2', label: 'Character 2' },
-	{ character: 'chara3', label: 'Character 3' }
-  ]
-  
+    {
+      character: "chara1",
+      characterName: "Char One Name",
+      label: "Character 1",
+      desc: "Character 1 Description Text.",
+    },
+    {
+      character: "chara2",
+      characterName: "Char Two Name",
+      label: "Character 2",
+      desc: "Character 2 Description Text.",
+    },
+    {
+      character: "chara3",
+      characterName: "Char Three Name",
+      label: "Character 3",
+      desc: "Character 3 Description Text.",
+    },
+  ];
+
   const [selectedCharacter, setSelectedCharacter] = useState([]);
   const handleCharacterChange = (character) => {
-	setSelectedCharacter(character);
+    setSelectedCharacter(character);
   };
 
-const validate = () => {
-	if (!selectedCharacter.character) setError("Please select a Character");
-	else {
-		setError("");
-		props.nextStep();
-		props.userCallback(selectedCharacter);
-	}
-};
-
+  const validate = () => {
+    if (!selectedCharacter.character) setError("Please select a Character");
+    else {
+      setError("");
+      props.nextStep();
+      props.userCallback(selectedCharacter);
+    }
+  };
 
   return (
     <div>
       <span style={{ color: "red" }}>{error}</span>
       <h1>Select a Character</h1>
       <FormGroup>
-        <Label>
-          For: <b>{props.user.name || ""}</b>
-        </Label>
-      </FormGroup>
-      <FormGroup>
         <Label>Character: </Label>
-		<Select options={characters} onChange={handleCharacterChange}/>
+        <Select options={characters} onChange={handleCharacterChange} />
         {/* <Multiselect 
 		options={characters} 
 		onSelect={(e) => handleCharacterChange(e)}
@@ -126,9 +96,115 @@ const validate = () => {
   );
 };
 
+const Two = (props) => {
+  const [error, setError] = useState("");
+  const options = [
+    { name: "agent1", label: "Agent 1", email: "agent1@gmail.com" },
+    { name: "agent2", label: "Agent 2", email: "agent2@comcast.net" },
+    { name: "agent3", label: "Agent 3", email: "agent3@yahoo.com" },
+  ];
+
+  const [selectedOption, setSelectedOption] = useState([]);
+  const handleChange = (options) => {
+    setSelectedOption(options); // TODO: make multi-select somehow
+  };
+
+  const validate = () => {
+    if (!selectedOption.name) setError("Agent is mandatory field");
+    else {
+      setError("");
+      props.nextStep();
+      props.userCallback(selectedOption);
+    }
+  };
+
+  return (
+    <div>
+      <span style={{ color: "red" }}>{error}</span>
+      <h1>Select an Agent</h1>
+      <FormGroup>
+        <Label>
+          Character: <b>{props.user.characterName || ""}</b>
+        </Label>
+      </FormGroup>
+      <br />
+      <FormGroup>
+        <Label>Name: </Label>
+        {/* MULTISELECT HERE? */}
+        {/* <Multiselect /> */}
+        <Select options={options} onChange={handleChange} />
+      </FormGroup>
+      <br />
+      <ActionButtons {...props} nextStep={validate} />
+      {/* <ActionButtons {...props} nextStep={validate} /> */}
+    </div>
+  );
+};
+
 const Three = (props) => {
+  const [error, setError] = useState("");
   console.log("step3 receive user object");
   console.log(props.user);
+
+  const validate = () => {
+    if (!emailBody) setError("Email is empty!");
+    else {
+      setError("");
+      props.nextStep();
+      props.userCallback(emailBody);
+    }
+  };
+
+  const [emailBody, setEmailBody] = useState({
+    msgBody:
+      "Looking for actors to play the role of: " +
+      props.user.characterName +
+      ". Let me know if you're interested!",
+  });
+  const handleBodyChange = (e) => {
+    console.log("body change");
+    console.log(props.user);
+    setEmailBody({ msgBody: e.target.value });
+  };
+
+  return (
+    <div>
+      <h2>Email Configuration</h2>
+      <p>Agent: {props.user.name}</p>
+      <p>Character: {props.user.characterName}</p>
+      <br />
+      <FormGroup>
+        <Label>
+          Message: <br />
+          {/* <input
+            type="text"
+            name="postContent"
+            value={emailBody}
+            onChange={handleBodyChange}
+          /> */}
+          <textarea
+            value={emailBody.msgBody}
+            name="emailBody"
+            onChange={handleBodyChange}
+          />
+        </Label>
+        <br />
+        {/* <textarea name="postContent" /> */}
+      </FormGroup>
+      <br />
+      <ActionButtons {...props} nextStep={validate} />
+    </div>
+  );
+};
+
+const Four = (props) => {
+  const link =
+    "mailto:" +
+    props.user.email +
+    "?subject=Cast%20Searching%20for%20" +
+    props.user.character +
+    "&body=Test%20Email%20Body%20Info:%20" +
+    props.user.msgBody;
 
   const handleLastStep = () => {
     props.lastStep();
@@ -137,16 +213,13 @@ const Three = (props) => {
 
   return (
     <div>
-      <h2>Email Configuration</h2>
-      <p>Agent: {props.user.value}</p>
-      <p>Character: {props.user.character}</p>
+      <h2>Confirmation</h2>
+      <p>Agent: {props.user.name}</p>
+      <p>Character: {props.user.characterName}</p>
+      <p>Message: {props.user.msgBody}</p>
       <br />
-	  <FormGroup>
-        <Label>Message: </Label>
-		<br/>
-        <textarea name="postContent" />
-      </FormGroup>
-	  <br/>
+      {/* Button that generates a mailto: link with the above information */}
+      <a href={link}>Send Mail!</a>
       <ActionButtons {...props} lastStep={handleLastStep} />
     </div>
   );
@@ -166,7 +239,7 @@ const Sample = () => {
     console.log(val);
     setUser((user) => ({
       ...user,
-      ...val
+      ...val,
     }));
   };
 
@@ -183,8 +256,8 @@ const Sample = () => {
   return (
     <div>
       <Stepper activeStep={activeStep}>
-        <Step label="Select Actor" />
         <Step label="Select Character" />
+        <Step label="Select Agent" />
         <Step label="Email Settings" />
         <Step label="Confirmation" />
       </Stepper>
@@ -192,7 +265,8 @@ const Sample = () => {
       <StepWizard instance={assignStepWizard} onStepChange={handleStepChange}>
         <One userCallback={assignUser} />
         <Two user={user} userCallback={assignUser} />
-        <Three user={user} completeCallback={handleComplete} />
+        <Three user={user} userCallback={assignUser} />
+        <Four user={user} completeCallback={handleComplete} />
       </StepWizard>
     </div>
   );
