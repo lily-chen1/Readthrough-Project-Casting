@@ -1,13 +1,23 @@
 import React from 'react';
 import EmailModal from './EmailModal'
-import { ProSidebarProvider } from 'react-pro-sidebar';
-import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-
+import Sidebar from './components/Sidebar.js'
+import Project from './components/Project.js'
 
 function ProjectPage() {
     
     return (
-        <EmailModal/>
+    <div>
+      <div>
+        <Sidebar></Sidebar>
+      </div>
+      <div>
+
+      <EmailModal/>
+      <Project></Project>
+      </div>
+    </div>
+
+        
       );
 }
 
