@@ -15,6 +15,7 @@
     "react-form-stepper": "^2.0.3",
     "react-icons": "^4.7.1",
     "react-modal": "^3.16.1",
+    "react-multi-select-component": "^4.3.4",
     "react-pro-sidebar": "^1.0.0",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",

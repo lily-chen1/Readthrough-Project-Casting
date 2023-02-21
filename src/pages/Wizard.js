@@ -3,7 +3,8 @@ import { Stepper, Step } from "react-form-stepper";
 import StepWizard from "react-step-wizard";
 import { Row, Col, Button, FormGroup, Label, Input } from "reactstrap";
 import Select from "react-select";
-import Multiselect from "multiselect-react-dropdown";
+// import Multiselect from "multiselect-react-dropdown";
+import { MultiSelect } from "react-multi-select-component";
 
 const ActionButtons = (props) => {
   const handleBack = () => {
@@ -47,33 +48,38 @@ const One = (props) => {
       character: "chara1",
       characterName: "Char One Name",
       label: "Character 1",
+      value: "Character 1",
       desc: "Character 1 Description Text.",
     },
     {
       character: "chara2",
       characterName: "Char Two Name",
       label: "Character 2",
+      value: "Character 2",
       desc: "Character 2 Description Text.",
     },
     {
       character: "chara3",
       characterName: "Char Three Name",
       label: "Character 3",
+      value: "Character 3",
       desc: "Character 3 Description Text.",
     },
   ];
 
-  const [selectedCharacter, setSelectedCharacter] = useState([]);
+  const [selectedCharacters, setselectedCharacters] = useState([]);
   const handleCharacterChange = (character) => {
-    setSelectedCharacter(character);
+    console.log("Character change: ");
+    console.log(character);
+    setselectedCharacters(character);
   };
 
   const validate = () => {
-    if (!selectedCharacter.character) setError("Please select a Character");
+    if (!selectedCharacters) setError("Please select a Character");
     else {
       setError("");
       props.nextStep();
-      props.userCallback(selectedCharacter);
+      props.userCallback({ characters: selectedCharacters });
     }
   };
 
@@ -83,12 +89,12 @@ const One = (props) => {
       <h1>Select a Character</h1>
       <FormGroup>
         <Label>Character: </Label>
-        <Select options={characters} onChange={handleCharacterChange} />
-        {/* <Multiselect 
-		options={characters} 
-		onSelect={(e) => handleCharacterChange(e)}
-        onRemove={(e) => handleCharacterChange(e)}
-				/> */}
+        <MultiSelect
+          options={characters}
+          onChange={(e) => handleCharacterChange(e)}
+          value={selectedCharacters}
+          labelledby="Character Select"
+        />
       </FormGroup>
       <br />
       <ActionButtons {...props} nextStep={validate} />
@@ -98,25 +104,46 @@ const One = (props) => {
 
 const Two = (props) => {
   const [error, setError] = useState("");
-  const options = [
-    { name: "agent1", label: "Agent 1", email: "agent1@gmail.com" },
-    { name: "agent2", label: "Agent 2", email: "agent2@comcast.net" },
-    { name: "agent3", label: "Agent 3", email: "agent3@yahoo.com" },
+  const agents = [
+    {
+      name: "agent1",
+      label: "Agent 1",
+      value: "Agent1",
+      email: "agent1@gmail.com",
+    },
+    {
+      name: "agent2",
+      label: "Agent 2",
+      value: "Agent2",
+      email: "agent2@comcast.net",
+    },
+    {
+      name: "agent3",
+      label: "Agent 3",
+      value: "Agent3",
+      email: "agent3@yahoo.com",
+    },
   ];
 
-  const [selectedOption, setSelectedOption] = useState([]);
-  const handleChange = (options) => {
-    setSelectedOption(options); // TODO: make multi-select somehow
+  const [selectedAgents, setselectedAgents] = useState([]);
+  const handleChangeAgents = (options) => {
+    setselectedAgents(options);
   };
 
   const validate = () => {
-    if (!selectedOption.name) setError("Agent is mandatory field");
+    if (!selectedAgents) setError("Agent is mandatory field");
     else {
       setError("");
       props.nextStep();
-      props.userCallback(selectedOption);
+      props.userCallback({ agents: selectedAgents });
     }
   };
+
+  // if user.props.characters is empty, then characterNames is an empty array
+  const characterNames = props.user.characters
+    ? props.user.characters.map((c) => c.characterName)
+    : [""];
+  const charNameString = characterNames.join(", ");
 
   return (
     <div>
@@ -124,19 +151,21 @@ const Two = (props) => {
       <h1>Select an Agent</h1>
       <FormGroup>
         <Label>
-          Character: <b>{props.user.characterName || ""}</b>
+          <b>Character: </b> {charNameString || ""}
         </Label>
       </FormGroup>
       <br />
       <FormGroup>
         <Label>Name: </Label>
-        {/* MULTISELECT HERE? */}
-        {/* <Multiselect /> */}
-        <Select options={options} onChange={handleChange} />
+        <MultiSelect
+          options={agents}
+          onChange={handleChangeAgents}
+          value={selectedAgents}
+          labelledBy="Agent Select"
+        />
       </FormGroup>
       <br />
       <ActionButtons {...props} nextStep={validate} />
-      {/* <ActionButtons {...props} nextStep={validate} /> */}
     </div>
   );
 };
@@ -146,19 +175,31 @@ const Three = (props) => {
   console.log("step3 receive user object");
   console.log(props.user);
 
+  // if user.props.characters is empty, then characterNames is an empty array
+  const characterNames = props.user.characters
+    ? props.user.characters.map((c) => c.characterName)
+    : [""];
+  const charNameString = characterNames.join(", ");
+
+  // if user.props.agents is empty, then agentNames is an empty array
+  const agentNames = props.user.agents
+    ? props.user.agents.map((c) => c.name)
+    : [""];
+  const agentNameString = agentNames.join(", ");
+
   const validate = () => {
     if (!emailBody) setError("Email is empty!");
     else {
       setError("");
       props.nextStep();
-      props.userCallback(emailBody);
+      props.userCallback(emailBody, emailSubject);
     }
   };
 
   const [emailBody, setEmailBody] = useState({
     msgBody:
-      "Looking for actors to play the role of: " +
-      props.user.characterName +
+      "Looking for actors to play the role/s of: " +
+      charNameString +
       ". Let me know if you're interested!",
   });
   const handleBodyChange = (e) => {
@@ -167,21 +208,40 @@ const Three = (props) => {
     setEmailBody({ msgBody: e.target.value });
   };
 
+  const [emailSubject, setEmailSubject] = useState({
+    msgSubject: "Cast Searching for: " + charNameString,
+  });
+  const handleSubjectChange = (e) => {
+    console.log("subject change");
+    console.log(props.user);
+    setEmailSubject({ msgSubject: e.target.value });
+  };
+
   return (
     <div>
       <h2>Email Configuration</h2>
-      <p>Agent: {props.user.name}</p>
-      <p>Character: {props.user.characterName}</p>
+      <p>
+        <b> Agents:</b> {agentNameString}
+      </p>
+      <p>
+        <b>Characters: </b>
+        {charNameString}
+      </p>
       <br />
+      {/* TODO: update styling for textarea so the size is appropriate */}
+      {/* TODO: Add settings also (idk what exactly - maybe bcc?) */}
       <FormGroup>
         <Label>
+          Subject: <br />
+          <textarea
+            value={emailSubject.msgSubject}
+            name="emailSubject"
+            onChange={handleSubjectChange}
+          />
+        </Label>
+        <br />
+        <Label>
           Message: <br />
-          {/* <input
-            type="text"
-            name="postContent"
-            value={emailBody}
-            onChange={handleBodyChange}
-          /> */}
           <textarea
             value={emailBody.msgBody}
             name="emailBody"
@@ -189,7 +249,6 @@ const Three = (props) => {
           />
         </Label>
         <br />
-        {/* <textarea name="postContent" /> */}
       </FormGroup>
       <br />
       <ActionButtons {...props} nextStep={validate} />
@@ -198,12 +257,33 @@ const Three = (props) => {
 };
 
 const Four = (props) => {
+  // if user.props.agents is empty, then agentNames is an empty array
+  const agentEmails = props.user.agents
+    ? props.user.agents.map((c) => c.email)
+    : [""];
+  const agentEmailString = agentEmails.join(",");
+
+  // if user.props.characters is empty, then characterNames is an empty array
+  const characterNames = props.user.characters
+    ? props.user.characters.map((c) => c.characterName)
+    : [""];
+  const charNameString = characterNames.join(", ");
+  const charNameEmailString = characterNames.join(",%20");
+
+  // if user.props.agents is empty, then agentNames is an empty array
+  const agentNames = props.user.agents
+    ? props.user.agents.map((c) => c.name)
+    : [""];
+  const agentNameString = agentNames.join(", ");
+
+  // TODO: maybe change subject to be name of project
+  // TODO: add bcc or other email customization options
   const link =
     "mailto:" +
-    props.user.email +
-    "?subject=Cast%20Searching%20for%20" +
-    props.user.character +
-    "&body=Test%20Email%20Body%20Info:%20" +
+    agentEmailString +
+    "?subject=" +
+    props.user.msgSubject +
+    "&body=" +
     props.user.msgBody;
 
   const handleLastStep = () => {
@@ -214,9 +294,15 @@ const Four = (props) => {
   return (
     <div>
       <h2>Confirmation</h2>
-      <p>Agent: {props.user.name}</p>
-      <p>Character: {props.user.characterName}</p>
-      <p>Message: {props.user.msgBody}</p>
+      <p>
+        <b>Agents:</b> {agentNameString}
+      </p>
+      <p>
+        <b>Character:</b> {charNameString}
+      </p>
+      <p>
+        <b>Message:</b> {props.user.msgBody}
+      </p>
       <br />
       {/* Button that generates a mailto: link with the above information */}
       <a href={link}>Send Mail!</a>
