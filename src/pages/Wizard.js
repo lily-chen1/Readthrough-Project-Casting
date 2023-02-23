@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { Stepper, Step } from "react-form-stepper";
 import StepWizard from "react-step-wizard";
 import { Row, Col, Button, FormGroup, Label, Input } from "reactstrap";
-import Select from "react-select";
+// import Select from "react-select";
 // import Multiselect from "multiselect-react-dropdown";
 import { MultiSelect } from "react-multi-select-component";
+import "./Wizard.css";
+
+// TODO: instead of current styling, probably implement a theme and use material ui for some thing
+// guy said styling and colors not as important as actually getting themes implemented so that coloring can be changed easily
 
 const ActionButtons = (props) => {
   const handleBack = () => {
@@ -19,20 +23,58 @@ const ActionButtons = (props) => {
     props.lastStep();
   };
 
+  const leftButonStyling = {
+    display: "inline-block",
+    width: "100px",
+    justifyContent: "space-around",
+    float: "left",
+    color: "#8e8169",
+    backgroundColor: "#ded7c3",
+    borderRadius: "4px",
+    border: "none",
+    height: "25px",
+    fontSize: "15px",
+    fontWeight: "bold",
+    textAlign: "center",
+    cursor: "pointer",
+  };
+
+  const rightButtonStyling = {
+    display: "inline-block",
+    width: "100px",
+    justifyContent: "space-around",
+    float: "right",
+    color: "#8e8169",
+    backgroundColor: "#ded7c3",
+    borderRadius: "4px",
+    border: "none",
+    height: "25px",
+    fontSize: "15px",
+    fontWeight: "bold",
+    textAlign: "center",
+    cursor: "pointer",
+  };
+
   return (
     <div>
       <Row>
         {props.currentStep > 1 && (
           <Col>
-            <Button onClick={handleBack}>Back</Button>
+            <Button style={leftButonStyling} onClick={handleBack}>
+              Back
+            </Button>
           </Col>
         )}
         <Col>
           {props.currentStep < props.totalSteps && (
-            <Button onClick={handleNext}>Next</Button>
+            <Button style={rightButtonStyling} onClick={handleNext}>
+              Next
+            </Button>
           )}
           {props.currentStep === props.totalSteps && (
-            <Button onClick={handleFinish}>Finish</Button>
+            <Button style={rightButtonStyling} onClick={handleFinish}>
+              Finish
+            </Button>
           )}
         </Col>
       </Row>
@@ -75,7 +117,7 @@ const One = (props) => {
   };
 
   const validate = () => {
-    if (!selectedCharacters) setError("Please select a Character");
+    if (!selectedCharacters.length) setError("Please select a Character");
     else {
       setError("");
       props.nextStep();
@@ -86,7 +128,7 @@ const One = (props) => {
   return (
     <div>
       <span style={{ color: "red" }}>{error}</span>
-      <h1>Select a Character</h1>
+      <h3>Select a Character</h3>
       <FormGroup>
         <Label>Character: </Label>
         <MultiSelect
@@ -131,7 +173,7 @@ const Two = (props) => {
   };
 
   const validate = () => {
-    if (!selectedAgents) setError("Agent is mandatory field");
+    if (!selectedAgents.length) setError("Agent is mandatory field");
     else {
       setError("");
       props.nextStep();
@@ -148,7 +190,7 @@ const Two = (props) => {
   return (
     <div>
       <span style={{ color: "red" }}>{error}</span>
-      <h1>Select an Agent</h1>
+      <h3>Select an Agent</h3>
       <FormGroup>
         <Label>
           <b>Character: </b> {charNameString || ""}
@@ -187,15 +229,6 @@ const Three = (props) => {
     : [""];
   const agentNameString = agentNames.join(", ");
 
-  const validate = () => {
-    if (!emailBody) setError("Email is empty!");
-    else {
-      setError("");
-      props.nextStep();
-      props.userCallback(emailBody, emailSubject);
-    }
-  };
-
   const [emailBody, setEmailBody] = useState({
     msgBody:
       "Looking for actors to play the role/s of: " +
@@ -216,10 +249,30 @@ const Three = (props) => {
     console.log(props.user);
     setEmailSubject({ msgSubject: e.target.value });
   };
+  const [emailSettings, setEmailSettings] = useState({
+    bcc: false,
+  });
+  const handleSettingsChange = (e) => {
+    console.log("settings change");
+    console.log(e);
+    setEmailSettings({ bcc: e.target.checked });
+  };
+
+  const validate = () => {
+    if (!emailBody) setError("Email is empty!");
+    else {
+      const body = emailBody.msgBody;
+      const subject = emailSubject.msgSubject;
+      const bcc = emailSettings.bcc;
+      setError("");
+      props.nextStep();
+      props.userCallback({ emailBody: body, emailSubject: subject, bcc: bcc });
+    }
+  };
 
   return (
     <div>
-      <h2>Email Configuration</h2>
+      <h3>Email Configuration</h3>
       <p>
         <b> Agents:</b> {agentNameString}
       </p>
@@ -227,22 +280,42 @@ const Three = (props) => {
         <b>Characters: </b>
         {charNameString}
       </p>
-      <br />
-      {/* TODO: update styling for textarea so the size is appropriate */}
-      {/* TODO: Add settings also (idk what exactly - maybe bcc?) */}
       <FormGroup>
-        <Label>
-          Subject: <br />
+        <Label style={{ width: "100%" }}>
+          <b>Subject:</b> <br />
           <textarea
+            style={{
+              width: "70%",
+              height: "40px",
+              border: "1px solid #8E8169",
+              borderRadius: "5px",
+              textJustify: "center",
+            }}
             value={emailSubject.msgSubject}
             name="emailSubject"
             onChange={handleSubjectChange}
           />
         </Label>
+        <Label style={{ float: "right", marginRight: "10px" }}>
+          <Input
+            style={{ color: "#8E8169" }}
+            type="checkbox"
+            onChange={handleSettingsChange}
+          />{" "}
+          BCC
+        </Label>
         <br />
-        <Label>
-          Message: <br />
+        <Label style={{ width: "100%" }}>
+          <b>Message:</b> <br />
           <textarea
+            style={{
+              width: "100%",
+              height: "90px",
+              border: "1px solid #8E8169",
+              borderRadius: "5px",
+              font: "inherit",
+              fontSize: "14px",
+            }}
             value={emailBody.msgBody}
             name="emailBody"
             onChange={handleBodyChange}
@@ -257,6 +330,8 @@ const Three = (props) => {
 };
 
 const Four = (props) => {
+  console.log("four");
+  console.log(props.user);
   // if user.props.agents is empty, then agentNames is an empty array
   const agentEmails = props.user.agents
     ? props.user.agents.map((c) => c.email)
@@ -268,7 +343,6 @@ const Four = (props) => {
     ? props.user.characters.map((c) => c.characterName)
     : [""];
   const charNameString = characterNames.join(", ");
-  const charNameEmailString = characterNames.join(",%20");
 
   // if user.props.agents is empty, then agentNames is an empty array
   const agentNames = props.user.agents
@@ -277,14 +351,24 @@ const Four = (props) => {
   const agentNameString = agentNames.join(", ");
 
   // TODO: maybe change subject to be name of project
-  // TODO: add bcc or other email customization options
-  const link =
-    "mailto:" +
-    agentEmailString +
-    "?subject=" +
-    props.user.msgSubject +
-    "&body=" +
-    props.user.msgBody;
+  let link = "";
+  if (props.user.bcc) {
+    link =
+      "mailto:?bcc=" +
+      agentEmailString +
+      "&subject=" +
+      props.user.emailSubject +
+      "&body=" +
+      props.user.emailBody;
+  } else {
+    link =
+      "mailto:" +
+      agentEmailString +
+      "?subject=" +
+      props.user.emailSubject +
+      "&body=" +
+      props.user.emailBody;
+  }
 
   const handleLastStep = () => {
     props.lastStep();
@@ -293,7 +377,7 @@ const Four = (props) => {
 
   return (
     <div>
-      <h2>Confirmation</h2>
+      <h3>Confirmation</h3>
       <p>
         <b>Agents:</b> {agentNameString}
       </p>
@@ -301,7 +385,10 @@ const Four = (props) => {
         <b>Character:</b> {charNameString}
       </p>
       <p>
-        <b>Message:</b> {props.user.msgBody}
+        <b>Subject:</b> {props.user.emailSubject}
+      </p>
+      <p>
+        <b>Message:</b> {props.user.emailBody}
       </p>
       <br />
       {/* Button that generates a mailto: link with the above information */}
@@ -339,9 +426,30 @@ const Sample = () => {
     alert("test: after email confirmation");
   };
 
+  const connectorStyling = {
+    activeColor: "#B6AC96",
+    completedColor: "#8E8169",
+    disabledColor: "#DED7C3",
+    size: 4,
+  };
+
+  const stepperStyling = {
+    activeBgColor: "#b6ac96",
+    activeTextColor: "#00000",
+    completedBgColor: "#8E8169",
+    completedTextColor: "#000000",
+    inactiveBgColor: "#DED7C3",
+    inactiveTextColor: "#000000",
+  };
+
   return (
     <div>
-      <Stepper activeStep={activeStep}>
+      <Stepper
+        activeStep={activeStep}
+        connectorStyleConfig={connectorStyling}
+        styleConfig={stepperStyling}
+        connectorStateColors={true}
+      >
         <Step label="Select Character" />
         <Step label="Select Agent" />
         <Step label="Email Settings" />
