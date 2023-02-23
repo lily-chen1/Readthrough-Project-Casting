@@ -1,13 +1,13 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./Dashboard";
+import ProjectDashboard from "./pages/ProjectDashboard.js";
 import FirebaseTest from "./FirebaseTest";
 
 const App = () => (
   <BrowserRouter>
     <Routes>
       {/* <Route path="/" element={<Home />} /> */}
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/projectDashboard" element={<ProjectDashboard />} />
       <Route path="/firebasetest" element={<FirebaseTest />} />
     </Routes>
   </BrowserRouter>
