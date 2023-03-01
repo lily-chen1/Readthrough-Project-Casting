@@ -7,8 +7,7 @@ import { Row, Col, Button, FormGroup, Label, Input } from "reactstrap";
 import { MultiSelect } from "react-multi-select-component";
 import "./Wizard.css";
 
-// TODO: instead of current styling, probably implement a theme and use material ui for some thing
-// guy said styling and colors not as important as actually getting themes implemented so that coloring can be changed easily
+// TODO: change styling to be part of a theme!
 
 const ActionButtons = (props) => {
   const handleBack = () => {
@@ -82,8 +81,68 @@ const ActionButtons = (props) => {
   );
 };
 
+// creates the mailto: link for the emails
+function linkBuilder(agentEmails, emailSubject, emailBody, bcc) {
+  // need agentemail string, email subject, email body, and whether or not to bcc
+  console.log("link building");
+  if (bcc) {
+    const link =
+      "mailto:?bcc=" +
+      agentEmails +
+      "&subject=" +
+      emailSubject +
+      "&body=" +
+      emailBody;
+    return link;
+  } else {
+    const link =
+      "mailto:" +
+      agentEmails +
+      "?subject=" +
+      emailSubject +
+      "&body=" +
+      emailBody;
+    return link;
+  }
+}
+
+// to convert names of agents or characters into a string of all the names
+function nameStringBuilder(listAgentsCharacters, type) {
+  console.log("name building: ");
+  console.log(listAgentsCharacters);
+  if (type == "agents") {
+    // if the list is of agents, access the agentName property
+    const names = listAgentsCharacters
+      ? listAgentsCharacters.map((c) => c.agentName).join(", ")
+      : [""];
+    return names;
+  } else if (type == "characters") {
+    // if the list is of character, access the characterName property instead
+    const names = listAgentsCharacters
+      ? listAgentsCharacters.map((c) => c.characterName).join(", ")
+      : [""];
+    return names;
+  }
+  return [""]; // just in case
+}
+
+// convert list of agents into a string of their emails
+function agentEmailStringBuilder(listAgents) {
+  const agentEmails = listAgents
+    ? listAgents.map((c) => c.email).join(",")
+    : [""];
+  return agentEmails;
+}
+
 const One = (props) => {
   const [error, setError] = useState("");
+  const [selectedCharacters, setselectedCharacters] = useState([]);
+
+  const handleCharacterChange = (character) => {
+    console.log("Character change: ");
+    console.log(character);
+    setselectedCharacters(character);
+  };
 
   const characters = [
     {
@@ -108,13 +167,6 @@ const One = (props) => {
       desc: "Character 3 Description Text.",
     },
   ];
-
-  const [selectedCharacters, setselectedCharacters] = useState([]);
-  const handleCharacterChange = (character) => {
-    console.log("Character change: ");
-    console.log(character);
-    setselectedCharacters(character);
-  };
 
   const validate = () => {
     if (!selectedCharacters.length) setError("Please select a Character");
@@ -146,31 +198,32 @@ const One = (props) => {
 
 const Two = (props) => {
   const [error, setError] = useState("");
+  const [selectedAgents, setselectedAgents] = useState([]);
+
+  const handleChangeAgents = (options) => {
+    setselectedAgents(options);
+  };
+
   const agents = [
     {
-      name: "agent1",
+      agentName: "agent1",
       label: "Agent 1",
       value: "Agent1",
       email: "agent1@gmail.com",
     },
     {
-      name: "agent2",
+      agentName: "agent2",
       label: "Agent 2",
       value: "Agent2",
       email: "agent2@comcast.net",
     },
     {
-      name: "agent3",
+      agentName: "agent3",
       label: "Agent 3",
       value: "Agent3",
       email: "agent3@yahoo.com",
     },
   ];
-
-  const [selectedAgents, setselectedAgents] = useState([]);
-  const handleChangeAgents = (options) => {
-    setselectedAgents(options);
-  };
 
   const validate = () => {
     if (!selectedAgents.length) setError("Agent is mandatory field");
@@ -181,11 +234,7 @@ const Two = (props) => {
     }
   };
 
-  // if user.props.characters is empty, then characterNames is an empty array
-  const characterNames = props.user.characters
-    ? props.user.characters.map((c) => c.characterName)
-    : [""];
-  const charNameString = characterNames.join(", ");
+  const charNameString = nameStringBuilder(props.user.characters, "characters");
 
   return (
     <div>
@@ -214,49 +263,51 @@ const Two = (props) => {
 
 const Three = (props) => {
   const [error, setError] = useState("");
+  const [emailBody, setEmailBody] = useState(() => {
+    const s =
+      "Looking for actors to play the role/s of: " +
+      nameStringBuilder(props.user.characters, "characters") +
+      ". Let me know if you're interested!";
+    console.log("EMAIL BODY: ", s);
+    return {
+      msgBody: s,
+    };
+  });
+  const [emailSubject, setEmailSubject] = useState(() => {
+    const s =
+      "Cast searching for: " +
+      nameStringBuilder(props.user.characters, "characters");
+    console.log("EMAIL SUBJECT: ", s);
+    return {
+      msgSubject: s,
+    };
+  });
+  const [emailSettings, setEmailSettings] = useState({
+    bcc: false,
+  });
+
   console.log("step3 receive user object");
   console.log(props.user);
 
-  // if user.props.characters is empty, then characterNames is an empty array
-  const characterNames = props.user.characters
-    ? props.user.characters.map((c) => c.characterName)
-    : [""];
-  const charNameString = characterNames.join(", ");
-
-  // if user.props.agents is empty, then agentNames is an empty array
-  const agentNames = props.user.agents
-    ? props.user.agents.map((c) => c.name)
-    : [""];
-  const agentNameString = agentNames.join(", ");
-
-  const [emailBody, setEmailBody] = useState({
-    msgBody:
-      "Looking for actors to play the role/s of: " +
-      charNameString +
-      ". Let me know if you're interested!",
-  });
   const handleBodyChange = (e) => {
     console.log("body change");
     console.log(props.user);
     setEmailBody({ msgBody: e.target.value });
   };
 
-  const [emailSubject, setEmailSubject] = useState({
-    msgSubject: "Cast Searching for: " + charNameString,
-  });
   const handleSubjectChange = (e) => {
     console.log("subject change");
     console.log(props.user);
     setEmailSubject({ msgSubject: e.target.value });
   };
-  const [emailSettings, setEmailSettings] = useState({
-    bcc: false,
-  });
   const handleSettingsChange = (e) => {
     console.log("settings change");
     console.log(e);
     setEmailSettings({ bcc: e.target.checked });
   };
+
+  const charNameString = nameStringBuilder(props.user.characters, "characters");
+  const agentNameString = nameStringBuilder(props.user.agents, "agents");
 
   const validate = () => {
     if (!emailBody) setError("Email is empty!");
@@ -332,43 +383,19 @@ const Three = (props) => {
 const Four = (props) => {
   console.log("four");
   console.log(props.user);
-  // if user.props.agents is empty, then agentNames is an empty array
-  const agentEmails = props.user.agents
-    ? props.user.agents.map((c) => c.email)
-    : [""];
-  const agentEmailString = agentEmails.join(",");
 
-  // if user.props.characters is empty, then characterNames is an empty array
-  const characterNames = props.user.characters
-    ? props.user.characters.map((c) => c.characterName)
-    : [""];
-  const charNameString = characterNames.join(", ");
+  const agentEmailString = agentEmailStringBuilder(props.user.agents);
+  const charNameString = nameStringBuilder(props.user.characters, "characters");
+  const agentNameString = nameStringBuilder(props.user.agents, "agents");
 
-  // if user.props.agents is empty, then agentNames is an empty array
-  const agentNames = props.user.agents
-    ? props.user.agents.map((c) => c.name)
-    : [""];
-  const agentNameString = agentNames.join(", ");
-
+  // need agentemail string, email subject, email body, and whether or not to bcc
   // TODO: maybe change subject to be name of project
-  let link = "";
-  if (props.user.bcc) {
-    link =
-      "mailto:?bcc=" +
-      agentEmailString +
-      "&subject=" +
-      props.user.emailSubject +
-      "&body=" +
-      props.user.emailBody;
-  } else {
-    link =
-      "mailto:" +
-      agentEmailString +
-      "?subject=" +
-      props.user.emailSubject +
-      "&body=" +
-      props.user.emailBody;
-  }
+  let link = linkBuilder(
+    agentEmailString,
+    props.user.emailSubject,
+    props.user.emailBody,
+    props.user.bcc
+  );
 
   const handleLastStep = () => {
     props.lastStep();
