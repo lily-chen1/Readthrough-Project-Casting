@@ -4,29 +4,37 @@ import TextField from '@mui/material/TextField';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import Checkbox from '@mui/material/Checkbox';
+import sampleProj from './project.json'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const testTags = [
-    { tag: 'Short Story', category: 'Film Type' },
-    { tag: 'Feature Film', category: 'Film Type' },
-    { tag: 'Trailer', category: 'Film Type' },
-    { tag: 'Action', category: 'Genre' },
-    { tag: 'Horror', category: 'Genre' },
-    { tag: 'Romance', category: 'Genre' },
-    { tag: 'Adventure', category: 'Genre' },
-    ]
+    { tagName: 'Short Story', category: 'Film Type' },
+    { tagName: 'Feature Film', category: 'Film Type' },
+    { tagName: 'Trailer', category: 'Film Type' },
+    { tagName: 'Action', category: 'Genre' },
+    { tagName: 'Horror', category: 'Genre' },
+    { tagName: 'Romance', category: 'Genre' },
+    { tagName: 'Adventure', category: 'Genre' },
+    { tagName: 'Comedy', category: 'Genre' },
+  ]
+
+const testTags1 = ["Comedy", "Action", "Romance", "Adventure"]
+
 
 
 export default function Tags() {
   return (
     <Autocomplete
       multiple
+      style={{ width: 500 }}
       id="checkboxes-tags-demo"
-      options={testTags}
+      options={testTags1}
       disableCloseOnSelect
-      getOptionLabel={(option) => option.tag}
+      //defaultValue={sampleProj.PushId.details.tags.list.PushId.tagName}
+      //groupBy={(option) => option.category}
+      getOptionLabel={(option) => option.tagName}
       renderOption={(props, option, { selected }) => (
         <li {...props}>
           <Checkbox
@@ -35,10 +43,9 @@ export default function Tags() {
             style={{ marginRight: 8 }}
             checked={selected}
           />
-          {option.tag}
+          {option.tagName}
         </li>
       )}
-     
       renderInput={(params) => (
         <TextField {...params} label="Tags"/> 
       )}

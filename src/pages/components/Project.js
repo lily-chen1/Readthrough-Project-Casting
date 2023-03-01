@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -12,10 +13,18 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 import Tags from './Tags.js'
 import ProjectStatus from './ProjectStatus.js'
 import EmailModal from './../EmailModal'
+import Character from './Character.js'
+import sampleProj from './project.json'
 
 export default function Project() {
     const [gender, setGender] = React.useState('');
@@ -31,13 +40,13 @@ export default function Project() {
                     <Grid container spacing={3}>
                         <Grid item xs={3}>
                             <Typography variant="h6" noWrap component="div">
-                                Project Name
+                                {sampleProj.PushId.details.projectName}
                             </Typography>
                         </Grid>
                         <Grid item xs={3}>
-                            <FormGroup>
-                                <FormControlLabel control={<Switch defaultChecked />} label="Edit Project Information" />
-                            </FormGroup>
+                            <Typography>
+                                Auto saving message
+                            </Typography>
                         </Grid>
                         <Grid item xs={3}>
                             <EmailModal />
@@ -53,18 +62,17 @@ export default function Project() {
                 <Grid container spacing={2}>
                     <Grid item xs={6} md={8}>
                         <TextField
-                            value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                            //value={project.description}, onChange allows edits
+                            value={sampleProj.PushId.details.description}
+                            
                             multiline
                             rows={10}
                             maxRows={15}
-                            disabled
                             fullWidth
                         />
                     </Grid>
                     <Grid item xs={6} md={4}>
                         <Box
-                            sx={{ display: 'flex', marginRight:'2em', backgroundColor: 'beige' }}
+                            sx={{ display: 'flex', marginRight: '2em', backgroundColor: 'beige' }}
                         >
                             <Tags />
                         </Box>
@@ -76,49 +84,23 @@ export default function Project() {
                     </Grid>
                 </Grid>
                 <br></br>
+
                 {/* Character Section */}
                 <h2>Characters</h2>
-                <Grid container spacing={4}>
-                    <Grid item xs={3}>
-                        <TextField
-                            value="Character"
-                            disabled
-                        >
-                        </TextField>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <ToggleButtonGroup
-                            value={"main"}
-                            exclusive
-                            //onChange={handleAlignment}
-                            aria-label="text alignment">
-                            <ToggleButton value="main" aria-label="left aligned">
-                                Main
-                            </ToggleButton>
-                            <ToggleButton value="supporting" aria-label="centered">
-                                Supporting
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <FormGroup fullWidth>
-                            <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={gender}
-                                label="Gender"
-                                onChange={handleChange}
-                            >
-                                <MenuItem value={"female"}>Female</MenuItem>
-                                <MenuItem value={"Male"}>Male</MenuItem>
-                            </Select>
-                        </FormGroup>
-                    </Grid>
-                    <Grid item xs={2}>
+                <Table>
+                    <TableBody>
+                        {Object.entries(sampleProj.PushId.characters.list).map((chara)=> (
+                            <Character key={chara[0]} prop={chara[1]} />
+                        )
+                        )
+                        }
+                        <TableRow>
+                            
+                        </TableRow>
+                    </TableBody>
+                </Table>
+                <Button sx={{ backgroundColor: "#DED7C3", marginBottom: '2em' }} variant="contained">Add Character</Button> 
 
-                    </Grid>
-                </Grid>
 
             </Box>
 
