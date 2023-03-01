@@ -44,36 +44,6 @@ const drawerWidth = 240;
 
 function ProjectDashboard() {
 return (
-	// <div className="container">
-	// 	<div className="header">
-	// 		<img className="logo" src={require('./assets/images/writerDuet-logo.png')}></img>
-	// 	</div>
-	// 	<hr className="header-line"></hr>
-	// 	<Drawer>
-	// 	</Drawer>
-	// 	<div className='project-table'>
-	// 		<tb className="card-grid">
-	// 		<tr>
-	// 			<th>Project Name</th>
-	// 			<th>Owner</th>
-	// 			<th>Status</th>
-	// 		</tr>	
-	// 		{Data
-	// 		.slice()
-	// 			.map((item) => ( 	
-	// 				<tr className="card">
-	// 				<div className="card-content">
-	// 					<div class="header">
-	// 					<td>{item.name}</td>
-	// 					<td>{item.owner}</td>
-	// 					<td>{item.status}</td>
-	// 					</div>
-	// 				</div>
-	// 				</tr>
-	// 			))}
-	// 		</tb>
-	// 	</div>
-    // </div>
 	<Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar
