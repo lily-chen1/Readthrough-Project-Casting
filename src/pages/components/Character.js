@@ -34,12 +34,12 @@ const Character = ({prop})=> {
                                 </Grid>
                                 <Grid item xs={2}>
                                     <ToggleButtonGroup
-                                        value={"main"}
+                                        value={prop.type}
                                         exclusive
                                         //onChange={handleAlignment}
                                         aria-label="text alignment">
-                                        <ToggleButton value="main" aria-label="left aligned">
-                                            Main
+                                        <ToggleButton value="lead" aria-label="left aligned">
+                                            Lead
                                         </ToggleButton>
                                         <ToggleButton value="supporting" aria-label="centered">
                                             Supporting
@@ -83,7 +83,7 @@ const Character = ({prop})=> {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid container spacing={3} style={{ marginTop: '1em' }}>
+                            <Grid container spacing={2} style={{ marginTop: '1em' }}>
                                 <Grid item xs={2}>
                                     <Box
                                     
@@ -107,9 +107,7 @@ const Character = ({prop})=> {
                                         fullWidth
                                     />
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <Button sx={{ backgroundColor: "#DED7C3", marginBottom: '2em' }} variant="contained">Remove Character</Button>
-                                </Grid>
+                              
                             </Grid>
                             </div>
     )

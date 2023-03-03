@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from "react";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -27,11 +27,37 @@ import Character from './Character.js'
 import sampleProj from './project.json'
 
 export default function Project() {
-    const [gender, setGender] = React.useState('');
+    const [characters, setCharacters] = useState(
+        Object.entries(sampleProj.PushId.characters.list));
 
-    const handleChange = (event) => {
-        setGender(event.target.value);
-    };
+    const addChara = () => {
+        let newChara = [
+            "PushId3", {
+                ageRange: {
+                    high: 0,
+                    low: 0,
+                },
+                characterName: "",
+                description: "",
+                genderIdentity: "",
+                image: "",
+                type: "",
+            }];
+        setCharacters(characters => [...characters, newChara])
+        console.log(characters)
+        console.log("new chara")
+    }
+    // const removeItem = (id) => {
+    //     setProduct(product.filter((i)=>(i.id !== id)))
+
+    //   }
+    const removeChara = (id) => {
+        const index = characters.findIndex(chara => chara[0] === id); //use id instead of index
+        if (index > -1) { //make sure you found it
+            setCharacters(prevState => prevState.splice(index, 1));
+        }
+
+    }
 
     return (
         <div>
@@ -63,7 +89,7 @@ export default function Project() {
                     <Grid item xs={6} md={8}>
                         <TextField
                             value={sampleProj.PushId.details.description}
-                            
+
                             multiline
                             rows={10}
                             maxRows={15}
@@ -89,23 +115,18 @@ export default function Project() {
                 <h2>Characters</h2>
                 <Table>
                     <TableBody>
-                        {Object.entries(sampleProj.PushId.characters.list).map((chara)=> (
-                            <Character key={chara[0]} prop={chara[1]} />
-                        )
-                        )
+                        {characters.map((chara) => (
+                            <TableRow>
+                                <Character key={chara[0]} prop={chara[1]} />
+                                <Button sx={{ backgroundColor: "#DED7C3", marginBottom: '2em' }} variant="contained" onClick={removeChara}>Remove Character</Button>
+
+                            </TableRow>
+                        ))
                         }
-                        <TableRow>
-                            
-                        </TableRow>
                     </TableBody>
                 </Table>
-                <Button sx={{ backgroundColor: "#DED7C3", marginBottom: '2em' }} variant="contained">Add Character</Button> 
-
-
+                <Button sx={{ backgroundColor: "#DED7C3", marginBottom: '2em' }} variant="contained" onClick={addChara}>Add Character</Button>
             </Box>
-
-
-
         </div>
     );
 }
