@@ -10,17 +10,7 @@ export const theme = createTheme({
         secondary: {
             main: '#ffffff',
         }
-     },
+    },
      
-     typography: {
-        fontFamily: 'Roboto',
-        fontSize: 15,
-        h1: { // incase h1 needs to have a separate fontFamily 
-            fontFamily: 'Times New Roman',
-            fontSize: 15,
-        }
-     },
-
-
 
 });

@@ -42,14 +42,54 @@ import Data from '../assets/jsons/mock_project_data.json'
 import '../resources/ProjectDashboard.css';
 
 const drawerWidth = 240;
+var projectData = Data;
 
+// Filter to be applied to "recent"
+// NOTE: needs to be edited to actually define a certain range of time
+function filter_by_timestamp(item){
+  if (item.timestamp =="12/4/22") {
+    return true;
+  }
+  return false;
+}
+
+function filter_by_hiatus(item){
+  if (item.status =="In Hiatus") {
+    return true;
+  }
+  return false;
+}
+
+function filter_by_trash(item){
+  return item.isTrashed;
+}
 
 
 function ProjectDashboard() {
-  const [view, setView] = useState('all_projects');
+  const [view, setView] = useState("all-projects");
 
   const handleView = (event, newView) => {
-    setView(newView);
+    if (newView != null) {
+      if (newView=="all-projects"){
+        projectData = Data;
+        console.log(projectData);
+      }
+      else if (newView=="recent"){
+        projectData = Data.filter(filter_by_timestamp);
+        console.log(projectData);
+      }
+      else if (newView=="hiatus"){
+        projectData = Data.filter(filter_by_hiatus);
+        console.log(projectData);
+      }
+      else {
+        projectData = Data.filter(filter_by_trash);
+        console.log(projectData);
+      }
+
+      setView(newView);
+      console.log(newView);    
+    }
   };
 
 
@@ -79,74 +119,93 @@ return (
         <Toolbar />
         <Divider />
         {/* <List>
-			<ListItem disablePadding>
-            	<ListItemButton>
-					<ListItemIcon>
-						<InventoryIcon />
-					</ListItemIcon>
-					<ListItemText primary='All Projects' />
-             	</ListItemButton>
-            </ListItem>
-			<ListItem disablePadding>
-            	<ListItemButton>
-					<ListItemIcon>
-						<AccessTimeFilledIcon />
-					</ListItemIcon>
-					<ListItemText primary='Recents' />
-             	</ListItemButton>
-            </ListItem>
-			<ListItem disablePadding>
-            	<ListItemButton>
-					<ListItemIcon>
-						<HideSourceIcon />
-					</ListItemIcon>
-					<ListItemText primary='In Hiatus' />
-             	</ListItemButton>
-            </ListItem>
-			<ListItem disablePadding>
-            	<ListItemButton>
-					<ListItemIcon>
-						<DeleteIcon />
-					</ListItemIcon>
-					<ListItemText primary='Trash' />
-             	</ListItemButton>
-            </ListItem>
-        </List>
-        <Divider />
-        <List>
-		  <ListItem disablePadding>
-            	<ListItemButton>
-					<ListItemIcon>
-						<PermIdentityIcon />
-					</ListItemIcon>
-					<ListItemText primary='Profile' />
-             	</ListItemButton>
-            </ListItem>
+          <ListItem disablePadding>
+                  <ListItemButton>
+              <ListItemIcon>
+                <InventoryIcon />
+              </ListItemIcon>
+              <ListItemText primary='All Projects' />
+                  </ListItemButton>
+                </ListItem>
+          <ListItem disablePadding>
+                  <ListItemButton>
+              <ListItemIcon>
+                <AccessTimeFilledIcon />
+              </ListItemIcon>
+              <ListItemText primary='Recents' />
+                  </ListItemButton>
+                </ListItem>
+          <ListItem disablePadding>
+                  <ListItemButton>
+              <ListItemIcon>
+                <HideSourceIcon />
+              </ListItemIcon>
+              <ListItemText primary='In Hiatus' />
+                  </ListItemButton>
+                </ListItem>
+          <ListItem disablePadding>
+                  <ListItemButton>
+              <ListItemIcon>
+                <DeleteIcon />
+              </ListItemIcon>
+              <ListItemText primary='Trash' />
+                  </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
+            <List>
+          <ListItem disablePadding>
+                  <ListItemButton>
+              <ListItemIcon>
+                <PermIdentityIcon />
+              </ListItemIcon>
+              <ListItemText primary='Profile' />
+                  </ListItemButton>
+                </ListItem>
 
-			<ListItem disablePadding>
-            	<ListItemButton>
-					<ListItemIcon>
-						<SettingsIcon />
-					</ListItemIcon>
-					<ListItemText primary='Settings' />
-             	</ListItemButton>
-            </ListItem>
+          <ListItem disablePadding>
+                  <ListItemButton>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary='Settings' />
+                  </ListItemButton>
+                </ListItem>
         </List> */}
 
         <ToggleButtonGroup
           orientation="vertical"
           value={view}
           exclusive
+          align="left"
           onChange={handleView}
         >
-          <ToggleButton value="all-projects" aria-label="all-project">
-            <InventoryIcon /> All Projects
+          <ToggleButton value="all-projects" aria-label="all-projects" >
+            <InventoryIcon /> 
+            All Projects
           </ToggleButton>
           <ToggleButton value="recent" aria-label="recent">
             <AccessTimeFilledIcon /> Recent
           </ToggleButton>
           <ToggleButton value="hiatus" aria-label="hiatus">
             <HideSourceIcon /> In Hiatus
+          </ToggleButton>
+          <ToggleButton value="trash" aria-label="trash">
+            <DeleteIcon /> Trash
+          </ToggleButton>
+        </ToggleButtonGroup>
+        <Divider />
+
+        <ToggleButtonGroup
+          orientation="vertical"
+          exclusive
+          align="left"
+        >
+          <ToggleButton value="all-projects" aria-label="all-projects" >
+            <PermIdentityIcon /> Profile
+          </ToggleButton>
+          <ToggleButton value="recent" aria-label="recent">
+            <SettingsIcon /> Settings
           </ToggleButton>
         </ToggleButtonGroup>
 
@@ -167,9 +226,9 @@ return (
           </TableRow>
         </TableHead>
         <TableBody>
-          {Data.map((project) => (
+          {projectData.map((project) => (
             <TableRow
-              key={project.title}
+              key={project.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">

@@ -5,20 +5,39 @@
         "title": "Project 1",
         "owner": "John Lim",
         "status": "Active",
-        "timestamp": "2/20/23"
+        "timestamp": "2/20/23",
+        "isTrashed": false
     },
     {
         "id": 2,
         "title": "Project 2",
         "owner": "Tinie Doan",
-        "status": "Not Active",
-        "timestamp": "1/3/23"
+        "status": "Active",
+        "timestamp": "1/3/23",
+        "isTrashed": false
     },
     {
         "id": 3,
         "title": "blub blub",
         "owner": "Fish",
-        "status": "Not Active",
-        "timestamp": "12/4/22"
+        "status": "Active",
+        "timestamp": "12/4/22",
+        "isTrashed":false
+    },
+    {
+        "id": 4,
+        "title": "blub blub",
+        "owner": "Fish",
+        "status": "In Hiatus",
+        "timestamp": "1/4/22",
+        "isTrashed": false
+    },
+    {
+        "id": 5,
+        "title": "blub blub",
+        "owner": "Fish",
+        "status": "In Hiatus",
+        "timestamp": "8/4/22",
+        "isTrashed": false
     }
 ]
