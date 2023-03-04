@@ -1,13 +1,14 @@
-import createMuiTheme from '@material-ui/core';
+import { createTheme } from '@mui/material/styles';
 
-const theme = createMuiTheme({
+
+export const theme = createTheme({
     
     palette: {
         primary: {
             main: '#2C5F2D',
         },
         secondary: {
-            main: '#97BC62',
+            main: '#ffffff',
         }
      },
      
@@ -19,5 +20,7 @@ const theme = createMuiTheme({
             fontSize: 15,
         }
      },
-     
+
+
+
 });

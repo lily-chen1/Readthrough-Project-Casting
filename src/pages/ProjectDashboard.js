@@ -10,10 +10,13 @@ import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 
+
+import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -34,25 +37,29 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-
-
 // local imports
 import Data from '../assets/jsons/mock_project_data.json'
 import '../resources/ProjectDashboard.css';
 
 const drawerWidth = 240;
 
+
+
 function ProjectDashboard() {
+  const [view, setView] = useState('all_projects');
+
+  const handleView = (event, newView) => {
+    setView(newView);
+  };
+
+
 return (
 	<Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        sx={{ width: `100%` }}
-      >
+      <AppBar>
         <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Permanent drawer
+          <Typography variant="h6">
+            Permanent drawerrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
           </Typography>
         </Toolbar>
       </AppBar>
@@ -71,7 +78,7 @@ return (
       >
         <Toolbar />
         <Divider />
-        <List>
+        {/* <List>
 			<ListItem disablePadding>
             	<ListItemButton>
 					<ListItemIcon>
@@ -124,7 +131,25 @@ return (
 					<ListItemText primary='Settings' />
              	</ListItemButton>
             </ListItem>
-        </List>
+        </List> */}
+
+        <ToggleButtonGroup
+          orientation="vertical"
+          value={view}
+          exclusive
+          onChange={handleView}
+        >
+          <ToggleButton value="all-projects" aria-label="all-project">
+            <InventoryIcon /> All Projects
+          </ToggleButton>
+          <ToggleButton value="recent" aria-label="recent">
+            <AccessTimeFilledIcon /> Recent
+          </ToggleButton>
+          <ToggleButton value="hiatus" aria-label="hiatus">
+            <HideSourceIcon /> In Hiatus
+          </ToggleButton>
+        </ToggleButtonGroup>
+
       </Drawer>
       <Box
         component="main"
