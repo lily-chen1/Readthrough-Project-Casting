@@ -2,10 +2,15 @@ import React, { useState } from "react";
 import { Stepper, Step } from "react-form-stepper";
 import StepWizard from "react-step-wizard";
 import { Row, Col, Button, FormGroup, Label, Input } from "reactstrap";
-// import Select from "react-select";
-// import Multiselect from "multiselect-react-dropdown";
 import { MultiSelect } from "react-multi-select-component";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import TextField from "@mui/material/TextField";
 import "./Wizard.css";
+// NOTE: each character and agents needs to have label and value properties
+import agents from "./data/agents.json"; // needs to be array of agent objects
+import characters from "./data/characters.json"; // needs to be array of character objects
+import EmailLinks from "./components/EmailLinks";
 
 // TODO: change styling to be part of a theme!
 
@@ -56,7 +61,7 @@ const ActionButtons = (props) => {
 
   return (
     <div>
-      <Row>
+      <Row style={{ paddingBottom: "20px" }}>
         {props.currentStep > 1 && (
           <Col>
             <Button style={leftButonStyling} onClick={handleBack}>
@@ -81,42 +86,17 @@ const ActionButtons = (props) => {
   );
 };
 
-// creates the mailto: link for the emails
-function linkBuilder(agentEmails, emailSubject, emailBody, bcc) {
-  // need agentemail string, email subject, email body, and whether or not to bcc
-  console.log("link building");
-  if (bcc) {
-    const link =
-      "mailto:?bcc=" +
-      agentEmails +
-      "&subject=" +
-      emailSubject +
-      "&body=" +
-      emailBody;
-    return link;
-  } else {
-    const link =
-      "mailto:" +
-      agentEmails +
-      "?subject=" +
-      emailSubject +
-      "&body=" +
-      emailBody;
-    return link;
-  }
-}
-
 // to convert names of agents or characters into a string of all the names
 function nameStringBuilder(listAgentsCharacters, type) {
   console.log("name building: ");
   console.log(listAgentsCharacters);
-  if (type == "agents") {
+  if (type === "agents") {
     // if the list is of agents, access the agentName property
     const names = listAgentsCharacters
       ? listAgentsCharacters.map((c) => c.agentName).join(", ")
       : [""];
     return names;
-  } else if (type == "characters") {
+  } else if (type === "characters") {
     // if the list is of character, access the characterName property instead
     const names = listAgentsCharacters
       ? listAgentsCharacters.map((c) => c.characterName).join(", ")
@@ -124,14 +104,6 @@ function nameStringBuilder(listAgentsCharacters, type) {
     return names;
   }
   return [""]; // just in case
-}
-
-// convert list of agents into a string of their emails
-function agentEmailStringBuilder(listAgents) {
-  const agentEmails = listAgents
-    ? listAgents.map((c) => c.email).join(",")
-    : [""];
-  return agentEmails;
 }
 
 const One = (props) => {
@@ -143,30 +115,6 @@ const One = (props) => {
     console.log(character);
     setselectedCharacters(character);
   };
-
-  const characters = [
-    {
-      character: "chara1",
-      characterName: "Char One Name",
-      label: "Character 1",
-      value: "Character 1",
-      desc: "Character 1 Description Text.",
-    },
-    {
-      character: "chara2",
-      characterName: "Char Two Name",
-      label: "Character 2",
-      value: "Character 2",
-      desc: "Character 2 Description Text.",
-    },
-    {
-      character: "chara3",
-      characterName: "Char Three Name",
-      label: "Character 3",
-      value: "Character 3",
-      desc: "Character 3 Description Text.",
-    },
-  ];
 
   const validate = () => {
     if (!selectedCharacters.length) setError("Please select a Character");
@@ -204,27 +152,6 @@ const Two = (props) => {
     setselectedAgents(options);
   };
 
-  const agents = [
-    {
-      agentName: "agent1",
-      label: "Agent 1",
-      value: "Agent1",
-      email: "agent1@gmail.com",
-    },
-    {
-      agentName: "agent2",
-      label: "Agent 2",
-      value: "Agent2",
-      email: "agent2@comcast.net",
-    },
-    {
-      agentName: "agent3",
-      label: "Agent 3",
-      value: "Agent3",
-      email: "agent3@yahoo.com",
-    },
-  ];
-
   const validate = () => {
     if (!selectedAgents.length) setError("Agent is mandatory field");
     else {
@@ -242,7 +169,17 @@ const Two = (props) => {
       <h3>Select an Agent</h3>
       <FormGroup>
         <Label>
-          <b>Character: </b> {charNameString || ""}
+          <TextField
+            id="characters-selected"
+            value={charNameString}
+            variant="standard"
+            fullWidth
+            InputProps={{
+              readOnly: true,
+            }}
+            size="small"
+            label="Characters Selected"
+          />
         </Label>
       </FormGroup>
       <br />
@@ -283,7 +220,7 @@ const Three = (props) => {
     };
   });
   const [emailSettings, setEmailSettings] = useState({
-    bcc: false,
+    bcc: "false",
   });
 
   console.log("step3 receive user object");
@@ -303,7 +240,7 @@ const Three = (props) => {
   const handleSettingsChange = (e) => {
     console.log("settings change");
     console.log(e);
-    setEmailSettings({ bcc: e.target.checked });
+    setEmailSettings({ bcc: e.target.value });
   };
 
   const charNameString = nameStringBuilder(props.user.characters, "characters");
@@ -323,53 +260,78 @@ const Three = (props) => {
 
   return (
     <div>
-      <h3>Email Configuration</h3>
+      <h3>Compose Message</h3>
       <p>
-        <b> Agents:</b> {agentNameString}
+        <TextField
+          id="characters-selected"
+          value={charNameString}
+          variant="standard"
+          fullWidth
+          InputProps={{
+            readOnly: true,
+          }}
+          size="small"
+          label="Characters Selected"
+        />
       </p>
       <p>
-        <b>Characters: </b>
-        {charNameString}
+        <TextField
+          id="agents-selected"
+          value={agentNameString}
+          variant="standard"
+          fullWidth
+          InputProps={{
+            readOnly: true,
+          }}
+          size="small"
+          label="Agents Selected"
+        />
       </p>
       <FormGroup>
-        <Label style={{ width: "100%" }}>
-          <b>Subject:</b> <br />
-          <textarea
-            style={{
-              width: "70%",
-              height: "40px",
-              border: "1px solid #8E8169",
-              borderRadius: "5px",
-              textJustify: "center",
-            }}
-            value={emailSubject.msgSubject}
-            name="emailSubject"
+        <Label style={{ width: "60%" }}>
+          {/* <h3>Compose Message: </h3> */}
+          <TextField
+            id="email-subject-textarea"
+            label="Subject"
+            multiline
+            sx={{ width: "60%" }}
+            maxRows={2}
+            defaultValue={emailSubject.msgSubject}
             onChange={handleSubjectChange}
+            variant="filled"
+            margin="normal"
           />
         </Label>
-        <Label style={{ float: "right", marginRight: "10px" }}>
-          <Input
-            style={{ color: "#8E8169" }}
-            type="checkbox"
+        <Label
+          style={{ float: "right", marginRight: "10px", paddingTop: "20px" }}
+        >
+          <ToggleButtonGroup
+            value={emailSettings.bcc}
+            exclusive
             onChange={handleSettingsChange}
-          />{" "}
-          BCC
+            aria-label="email bcc settings"
+            size="small"
+          >
+            <ToggleButton value="true" aria-label="bcc">
+              BCC
+            </ToggleButton>
+            <ToggleButton value="false" aria-label="separate emails">
+              Separate Emails
+            </ToggleButton>
+          </ToggleButtonGroup>
         </Label>
         <br />
         <Label style={{ width: "100%" }}>
-          <b>Message:</b> <br />
-          <textarea
-            style={{
-              width: "100%",
-              height: "90px",
-              border: "1px solid #8E8169",
-              borderRadius: "5px",
-              font: "inherit",
-              fontSize: "14px",
-            }}
-            value={emailBody.msgBody}
-            name="emailBody"
+          <TextField
+            id="email-message-textarea"
+            label="Message"
+            multiline
+            fullWidth
+            rows={4}
+            defaultValue={emailBody.msgBody}
             onChange={handleBodyChange}
+            variant="filled"
+            margin="normal"
           />
         </Label>
         <br />
@@ -384,18 +346,11 @@ const Four = (props) => {
   console.log("four");
   console.log(props.user);
 
-  const agentEmailString = agentEmailStringBuilder(props.user.agents);
   const charNameString = nameStringBuilder(props.user.characters, "characters");
   const agentNameString = nameStringBuilder(props.user.agents, "agents");
 
   // need agentemail string, email subject, email body, and whether or not to bcc
   // TODO: maybe change subject to be name of project
-  let link = linkBuilder(
-    agentEmailString,
-    props.user.emailSubject,
-    props.user.emailBody,
-    props.user.bcc
-  );
 
   const handleLastStep = () => {
     props.lastStep();
@@ -409,7 +364,7 @@ const Four = (props) => {
         <b>Agents:</b> {agentNameString}
       </p>
       <p>
-        <b>Character:</b> {charNameString}
+        <b>Characters:</b> {charNameString}
       </p>
       <p>
         <b>Subject:</b> {props.user.emailSubject}
@@ -417,9 +372,13 @@ const Four = (props) => {
       <p>
         <b>Message:</b> {props.user.emailBody}
       </p>
+      <EmailLinks
+        agents={props.user.agents}
+        subject={props.user.emailSubject}
+        body={props.user.emailBody}
+        bcc={props.user.bcc}
+      ></EmailLinks>
       <br />
-      {/* Button that generates a mailto: link with the above information */}
-      <a href={link}>Send Mail!</a>
       <ActionButtons {...props} lastStep={handleLastStep} />
     </div>
   );

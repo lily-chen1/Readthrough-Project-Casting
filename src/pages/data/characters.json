@@ -1,0 +1,26 @@
+[
+    {
+      "character": "chara1",
+      "characterName": "Char One Name",
+      "label": "Character 1",
+      "value": "Character 1",
+      "description": "Character 1 Description Text.",
+      "genderIdentity": "female"
+    },
+    {
+      "character": "chara2",
+      "characterName": "Char Two Name",
+      "label": "Character 2",
+      "value": "Character 2",
+      "description": "Character 2 Description Text.",
+      "genderIdentity": "male"
+    },
+    {
+      "character": "chara3",
+      "characterName": "Char Three Name",
+      "label": "Character 3",
+      "value": "Character 3",
+      "description": "Character 3 Description Text.",
+      "genderIdentity": "female"
+    }
+  ]

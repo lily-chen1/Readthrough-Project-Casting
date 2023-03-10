@@ -1,0 +1,20 @@
+[
+    {
+      "agentName": "agent1",
+      "label": "Agent 1",
+      "value": "Agent1ID",
+      "emailAddress": "agent1@gmail.com"
+    },
+    {
+      "agentName": "agent2",
+      "label": "Agent 2",
+      "value": "Agent2ID",
+      "emailAddress": "agent2@comcast.net"
+    },
+    {
+      "agentName": "agent3",
+      "label": "Agent 3",
+      "value": "Agent3ID",
+      "emailAddress": "agent3@yahoo.com"
+    }
+  ]
