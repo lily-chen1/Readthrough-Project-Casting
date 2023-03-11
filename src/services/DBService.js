@@ -5,6 +5,8 @@ import db from "../Firebase";
 //
 //
 // Will most likily use different methos with MobX
+
+// LOOK TO TRANSPORT LAYER AND THE STORES FOLDER
 //
 //
 //
