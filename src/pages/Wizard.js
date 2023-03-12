@@ -114,6 +114,18 @@ const One = (props) => {
     console.log("Character change: ");
     console.log(character);
     setselectedCharacters(character);
+    props.setBody({
+      msgBody:
+        "Looking for actors to play the role/s of: " +
+        nameStringBuilder(character, "characters") +
+        ". Let me know if you're interested!",
+    });
+    props.setSubject({
+      msgSubject:
+        "Cast searching for: " + nameStringBuilder(character, "characters"),
+    });
+    console.log("props:");
+    console.log(props);
   };
 
   const validate = () => {
@@ -200,25 +212,6 @@ const Two = (props) => {
 
 const Three = (props) => {
   const [error, setError] = useState("");
-  const [emailBody, setEmailBody] = useState(() => {
-    const s =
-      "Looking for actors to play the role/s of: " +
-      nameStringBuilder(props.user.characters, "characters") +
-      ". Let me know if you're interested!";
-    console.log("EMAIL BODY: ", s);
-    return {
-      msgBody: s,
-    };
-  });
-  const [emailSubject, setEmailSubject] = useState(() => {
-    const s =
-      "Cast searching for: " +
-      nameStringBuilder(props.user.characters, "characters");
-    console.log("EMAIL SUBJECT: ", s);
-    return {
-      msgSubject: s,
-    };
-  });
   const [emailSettings, setEmailSettings] = useState({
     bcc: "false",
   });
@@ -229,13 +222,13 @@ const Three = (props) => {
   const handleBodyChange = (e) => {
     console.log("body change");
     console.log(props.user);
-    setEmailBody({ msgBody: e.target.value });
+    props.setBody({ msgBody: e.target.value });
   };
 
   const handleSubjectChange = (e) => {
     console.log("subject change");
     console.log(props.user);
-    setEmailSubject({ msgSubject: e.target.value });
+    props.setSubject({ msgSubject: e.target.value });
   };
   const handleSettingsChange = (e) => {
     console.log("settings change");
@@ -247,10 +240,10 @@ const Three = (props) => {
   const agentNameString = nameStringBuilder(props.user.agents, "agents");
 
   const validate = () => {
-    if (!emailBody) setError("Email is empty!");
+    if (!props.emailBody) setError("Email is empty!");
     else {
-      const body = emailBody.msgBody;
-      const subject = emailSubject.msgSubject;
+      const body = props.emailBody.msgBody;
+      const subject = props.emailSubject.msgSubject;
       const bcc = emailSettings.bcc;
       setError("");
       props.nextStep();
@@ -295,8 +288,9 @@ const Three = (props) => {
             label="Subject"
             multiline
             sx={{ width: "60%" }}
-            maxRows={2}
-            defaultValue={emailSubject.msgSubject}
+            maxRows={3}
+            InputLabelProps={{ shrink: true }}
+            defaultValue={props.emailSubject.msgSubject}
             onChange={handleSubjectChange}
             variant="filled"
             margin="normal"
@@ -327,8 +321,9 @@ const Three = (props) => {
             label="Message"
             multiline
             fullWidth
-            rows={4}
-            defaultValue={emailBody.msgBody}
+            rows={5}
+            InputLabelProps={{ shrink: true }}
+            defaultValue={props.emailBody.msgBody}
             onChange={handleBodyChange}
             variant="filled"
             margin="normal"
@@ -344,7 +339,7 @@ const Three = (props) => {
 
 const Four = (props) => {
   console.log("four");
-  console.log(props.user);
+  console.log(props);
 
   const charNameString = nameStringBuilder(props.user.characters, "characters");
   const agentNameString = nameStringBuilder(props.user.agents, "agents");
@@ -374,8 +369,8 @@ const Four = (props) => {
       </p>
       <EmailLinks
         agents={props.user.agents}
-        subject={props.user.emailSubject}
-        body={props.user.emailBody}
+        subject={props.emailSubject.msgSubject}
+        body={props.emailBody.msgBody}
         bcc={props.user.bcc}
       ></EmailLinks>
       <br />
@@ -388,6 +383,8 @@ const Sample = () => {
   const [stepWizard, setStepWizard] = useState(null);
   const [user, setUser] = useState({});
   const [activeStep, setActiveStep] = useState(0);
+  const [emailBody, setEmailBody] = useState({});
+  const [emailSubject, setEmailSubject] = useState({});
 
   const assignStepWizard = (instance) => {
     setStepWizard(instance);
@@ -443,10 +440,26 @@ const Sample = () => {
       </Stepper>
       {/* NOTE: IMPORTANT !! StepWizard must contains at least 2 children components, else got error */}
       <StepWizard instance={assignStepWizard} onStepChange={handleStepChange}>
-        <One userCallback={assignUser} />
+        <One
+          userCallback={assignUser}
+          setBody={setEmailBody}
+          setSubject={setEmailSubject}
+        />
         <Two user={user} userCallback={assignUser} />
-        <Three user={user} userCallback={assignUser} />
-        <Four user={user} completeCallback={handleComplete} />
+        <Three
+          user={user}
+          userCallback={assignUser}
+          emailBody={emailBody}
+          emailSubject={emailSubject}
+          setBody={setEmailBody}
+          setSubject={setEmailSubject}
+        />
+        <Four
+          user={user}
+          completeCallback={handleComplete}
+          emailBody={emailBody}
+          emailSubject={emailSubject}
+        />
       </StepWizard>
     </div>
   );
