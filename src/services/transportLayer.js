@@ -12,6 +12,9 @@ import { app } from "../Firebase";
 import { makeAutoObservable } from "mobx";
 export class TransportLayer {
   updateListeners = [];
+  createListeners = [];
+  deleteListeners = [];
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -19,7 +22,6 @@ export class TransportLayer {
   onReceiveProjectUpdate(callback) {
     this.updateListeners.push(callback);
   }
-  //RETURN json
   receiveProjectUpdate(updatedProject) {
     this.updateListeners.forEach((callback) => {
       const db = getDatabase(app);
@@ -30,31 +32,43 @@ export class TransportLayer {
     });
   }
 
-  //RETURN json
-  onReceiveProjectCreate(json) {
-    const db = getDatabase(app);
-    const postListRef = ref(db, "Projects");
-    const newPostRef = push(postListRef);
-    set(newPostRef, json);
-    return json;
+  onReceiveProjectCreate(callback) {
+    this.createListeners.push(callback);
+  }
+  receiveProjectCreate(createdProject) {
+    this.createListeners.forEach((callback) => {
+      const db = getDatabase(app);
+      const postListRef = ref(db, "Projects");
+      const newPostRef = push(postListRef);
+      set(newPostRef, createdProject);
+      callback(createdProject);
+      return createdProject;
+    });
   }
 
-  //Return id
-  onReceiveProjectDelete(project_id) {
-    const db = getDatabase(app);
-    const postListRef = ref(db, "Projects", project_id);
-    remove(postListRef);
-    return project_id;
+  onReceiveProjectDelete(callback) {
+    this.deleteListeners.push(callback);
+  }
+  ReceiveProjectDelete(project_id) {
+    this.deleteListeners.forEach((callback) => {
+      const db = getDatabase(app);
+      const postListRef = ref(db, "Projects", project_id);
+      remove(postListRef);
+      callback(project_id);
+      return project_id;
+    });
   }
 
   //RETURN json
   fetchProjects() {
-    const db = getDatabase(app);
-    const the_ref = query(ref(db, "/Projects"));
-    //const projectArray = [];
-    onValue(the_ref, (snapshot) => {
-      return snapshot.val();
-      //Object.keys(data).map((key) => (projectArray[key] = data[key]));
+    return new Promise(() => {
+      const db = getDatabase(app);
+      const the_ref = query(ref(db, "/Projects"));
+      //const projectArray = [];
+      onValue(the_ref, (snapshot) => {
+        return snapshot.val();
+        //Object.keys(data).map((key) => (projectArray[key] = data[key]));
+      });
     });
   }
 

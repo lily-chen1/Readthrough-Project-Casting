@@ -30,6 +30,7 @@ export class ProjectStore {
   loadProjects() {
     this.isLoading = true;
     this.projects = [];
+    console.log(this.transportLayer.fetchProjects());
     this.transportLayer.fetchProjects().then((fetchedProjects) => {
       runInAction(() => {
         fetchedProjects.forEach((json) => this.updateProjectList(json));
@@ -39,7 +40,6 @@ export class ProjectStore {
   }
 
   updateProjectList(json) {
-    console.log(json);
     let project = this.projects.find((project) => project.id === json.id);
     if (!project) {
       this.projects = Object.assign(json);
