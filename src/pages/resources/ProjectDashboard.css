@@ -1,0 +1,30 @@
+.header{
+    width:100%;
+    height:60px;
+}
+.logo{
+    padding: 10px;
+}
+
+.header-line{
+    color: rgb(155, 155, 155);
+    padding: 0px;
+}
+
+.side-bar{
+    width: 40%;
+    padding-left: 0.5rem;
+    margin-left: 0.5rem;
+    float: right;
+    background-color: #f6f6f6;
+}
+
+.project-table{
+    float: left;
+}
+
+/* search-bar{
+    display:inline-block;
+    line-height:52px;
+    padding-right:14px;
+} */
