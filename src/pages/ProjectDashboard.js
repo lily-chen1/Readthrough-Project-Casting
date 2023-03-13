@@ -14,13 +14,13 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
+import Button from '@mui/material/Button';
 
-
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+// import List from '@mui/material/List';
+// import ListItem from '@mui/material/ListItem';
+// import ListItemButton from '@mui/material/ListItemButton';
+// import ListItemIcon from '@mui/material/ListItemIcon';
+// import ListItemText from '@mui/material/ListItemText';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
@@ -40,46 +40,50 @@ import Paper from '@mui/material/Paper';
 // local imports
 import Data from '../assets/jsons/mock_project_data.json'
 import '../resources/ProjectDashboard.css';
+import SearchBar from '../components/SearchBar.js'
 
 const drawerWidth = 240;
-var projectData = Data;
 
-// Filter to be applied to "recent"
-// NOTE: needs to be edited to actually define a certain range of time
-function filter_by_timestamp(item){
-  if (item.timestamp =="12/4/22") {
+function filter_by_active(item){
+  if (item.status =="Active") {
     return true;
   }
   return false;
 }
 
-function filter_by_hiatus(item){
-  if (item.status =="In Hiatus") {
-    return true;
+function filter_by_all_projects(item){
+  if (item.status =="Trashed") {
+    return false;
   }
-  return false;
+  return true;
 }
+
 
 function filter_by_trash(item){
-  return item.isTrashed;
+  if (item.status =="Trashed") {
+    return true;
+  }
+  return false;
 }
 
+var projectData = Data.filter(filter_by_active);
 
 function ProjectDashboard() {
+  
+  // SEARCH BAR
+  // const search_parameters = Object.keys(Object.assign({}, ...));
+  
+  // FOLDER IMPLEMENTAION
   const [view, setView] = useState("all-projects");
 
   const handleView = (event, newView) => {
     if (newView != null) {
       if (newView=="all-projects"){
-        projectData = Data;
+        projectData = Data.filter(filter_by_all_projects);
         console.log(projectData);
       }
-      else if (newView=="recent"){
-        projectData = Data.filter(filter_by_timestamp);
-        console.log(projectData);
-      }
-      else if (newView=="hiatus"){
-        projectData = Data.filter(filter_by_hiatus);
+      else if (newView=="active"){
+        projectData = Data.filter(filter_by_active);
         console.log(projectData);
       }
       else {
@@ -99,8 +103,10 @@ return (
       <AppBar>
         <Toolbar>
           <Typography variant="h6">
-            Permanent drawerrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+          rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr     My Projects
           </Typography>
+          <SearchBar/>
+
         </Toolbar>
       </AppBar>
       <Drawer
@@ -180,15 +186,11 @@ return (
           align="left"
           onChange={handleView}
         >
-          <ToggleButton value="all-projects" aria-label="all-projects" >
-            <InventoryIcon /> 
-            All Projects
+          <ToggleButton value="active" aria-label="active" >
+            <InventoryIcon /> Active
           </ToggleButton>
-          <ToggleButton value="recent" aria-label="recent">
-            <AccessTimeFilledIcon /> Recent
-          </ToggleButton>
-          <ToggleButton value="hiatus" aria-label="hiatus">
-            <HideSourceIcon /> In Hiatus
+          <ToggleButton value="all-projects" aria-label="all-projects">
+            <AccessTimeFilledIcon /> All Projects
           </ToggleButton>
           <ToggleButton value="trash" aria-label="trash">
             <DeleteIcon /> Trash
@@ -215,34 +217,40 @@ return (
         sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
       >
         <Toolbar />
-		<TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Project Title</TableCell>
-            <TableCell align="right">Owner</TableCell>
-            <TableCell align="right">Status</TableCell>
-            <TableCell align="right">Timestamp</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {projectData.map((project) => (
-            <TableRow
-              key={project.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {project.title}
-              </TableCell>
-              <TableCell align="right">{project.owner}</TableCell>
-              <TableCell align="right">{project.status}</TableCell>
-              <TableCell align="right">{project.timestamp}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Project Title</TableCell>
+                <TableCell align="right">Owner</TableCell>
+                <TableCell align="right">Status</TableCell>
+                <TableCell align="right">Timestamp</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {projectData.map((project) => (
+                <TableRow
+                  key={project.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {project.title}
+                  </TableCell>
+                  <TableCell align="right">{project.owner}</TableCell>
+                  <TableCell align="right">{project.status}</TableCell>
+                  <TableCell align="right">{project.timestamp}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+          <Button
+          sx={{
+            bgcolor: '#5D6BB5',
+          }}
+          >
+            + New Project
+          </Button>
       </Box>
     </Box>
 );
