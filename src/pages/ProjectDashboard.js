@@ -38,9 +38,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 // local imports
-import Data from '../assets/jsons/mock_project_data.json'
-import '../resources/ProjectDashboard.css';
-import SearchBar from '../components/SearchBar.js'
+import Data from './data/mock_project_data.json'
+import './resources/ProjectDashboard.css';
+import SearchBar from './components/SearchBar.js'
 
 const drawerWidth = 240;
 

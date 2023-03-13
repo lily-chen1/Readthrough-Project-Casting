@@ -1,7 +1,6 @@
 import React from 'react';
 import EmailModal from './EmailModal'
 import Project from './components/Project.js'
-import ProjectTest from './components/ProjectTest.js'
 
 function ProjectPage() {
     
@@ -11,8 +10,7 @@ function ProjectPage() {
       <div>
 
       <EmailModal/>
-      {/* <Project></Project> */}
-      <ProjectTest></ProjectTest>
+      <Project></Project>
       </div>
     </div>
 
