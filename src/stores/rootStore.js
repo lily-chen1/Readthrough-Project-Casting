@@ -1,12 +1,13 @@
-import ProjectStore from './projectStore';
-import UserStore from './userStore';
-import TransportLayer from '../services/transportLayer';
+import ProjectStore from "./projectStore";
+import UserStore from "./userStore";
+import TransportLayer from "../services/transportLayer";
 
 class RootStore {
-    constructor() {
-        this.projectStore = new ProjectStore(this, TransportLayer);
-        this.usersStore = new UserStore(this);
-    }
+  constructor() {
+    let temp = new TransportLayer();
+    this.projectStore = new ProjectStore(this, temp);
+    this.usersStore = new UserStore(this);
+  }
 }
 
 const rootStore = new RootStore();
