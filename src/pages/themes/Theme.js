@@ -8,8 +8,15 @@ const theme = createTheme({
     secondary: {
       main: "#ffffff",
     },
+    background: {
+      default: "#F6F4EE"
+    }
   },
   components: {
+    MuiAutocomplete: {
+      backgroundColor: "#FAF9F6", 
+      border: "#DED7C3"
+    },
     MuiButton: {
       variants: [
         {
@@ -27,6 +34,7 @@ const theme = createTheme({
         },
       ],
     },
+
   },
   typography: {
     fontFamily: "Roboto, Helvetica, Arial, sans-serif",

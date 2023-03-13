@@ -1,19 +1,18 @@
 import React from 'react';
 import EmailModal from './EmailModal'
-import Sidebar from './components/Sidebar.js'
 import Project from './components/Project.js'
+import ProjectTest from './components/ProjectTest.js'
 
 function ProjectPage() {
     
     return (
     <div>
-      <div>
-        <Sidebar></Sidebar>
-      </div>
+      
       <div>
 
       <EmailModal/>
-      <Project></Project>
+      {/* <Project></Project> */}
+      <ProjectTest></ProjectTest>
       </div>
     </div>
 

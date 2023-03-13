@@ -2,33 +2,30 @@ import React, { useState, useRef } from "react";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
-import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import sampleProj from './project.json'
 
+import theme from "../themes/Theme";
+import { ThemeProvider } from "@mui/material/styles";
 
 
 const Character = (props) => {
     let {ageRange, characterName, description, genderIdentity, image, type} = props.characters[props.index][1] || {};
-    // let high = ageRange.high || 0
-    // let low = ageRange.low || 0
+    let high = ageRange.high || 0
+    let low = ageRange.low || 0
     const setCharacters = props.setCharacters;
 
     const [tempCharacterName, setTempCharacterName] = useState(characterName);
     const [tempDescription, setTempDescription] = useState(description)
     const [tempGenderIdentity, setTempGenderIdentity] = useState(genderIdentity)
     const [tempType, setTempType] = useState(type)
-    // const [tempLow, setTempLow] = useState(low)
-    // const [tempHigh, setTempHigh] = useState(high)
+    const [tempLow, setTempLow] = useState(low)
+    const [tempHigh, setTempHigh] = useState(high)
   
     const handleType = (event, type) => {
         setTempType(type);
@@ -46,17 +43,21 @@ const Character = (props) => {
             description: tempDescription,
             genderIdentity: tempGenderIdentity,
             type: tempType,
-            //ageRange.high: tempHigh
+            ageRange: {
+                high: tempHigh,
+                low: tempLow
+            }
+        
         });
 
         // Update the parent state
         setCharacters(characters);
-
     }
     
 
     return (
         <div>
+             <ThemeProvider theme={theme}>
             <Grid container spacing={5}>
                 <Grid item xs={2}>
                     <TextField
@@ -100,9 +101,9 @@ const Character = (props) => {
                 <Grid item xs={2}>
                     <TextField
                         id="outlined-number"
-                        // value={tempLow}
-                        // onChange={(e) => setTempLow(e.target.value)}
-                        // type="number"
+                        value={tempLow}
+                        onChange={(e) => setTempLow(e.target.value)}
+                        type="number"
                         InputLabelProps={{
                             shrink: true,
                         }}
@@ -111,9 +112,9 @@ const Character = (props) => {
                 <Grid item xs={2}>
                     <TextField
                         id="outlined-number"
-                        // value={tempHigh}
+                        value={tempHigh}
                         type="number"
-                        // onChange={(e) => setTempHigh(e.target.value)}
+                        onChange={(e) => setTempHigh(e.target.value)}
                         InputLabelProps={{
                             shrink: true,
                         }}
@@ -144,6 +145,7 @@ const Character = (props) => {
                 </Grid>
 
             </Grid>
+            </ThemeProvider>
         </div>
     )
 

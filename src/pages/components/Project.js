@@ -1,28 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
 import Tags from './Tags.js'
@@ -30,7 +14,10 @@ import ProjectStatus from './ProjectStatus.js'
 import EmailModal from './../EmailModal'
 import Character from './Character.js'
 import sampleProj from './project.json'
+import Sidebar from './Sidebar.js'
 
+import theme from "../themes/Theme";
+import { ThemeProvider } from "@mui/material/styles";
 
 const style = {
     position: 'absolute',
@@ -38,7 +25,6 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
@@ -54,6 +40,62 @@ export default function Project() {
     const [projectTags, setProjectTags] = useState(
         sampleProj.PushId.details.tags.list.PushId
      )
+
+    //  const ProjectData = class {
+    //     constructor(sampleProj) {
+    //       //this.project = sampleProj// JSON.parse(project_json)
+    //       this.project = {
+    //         name: sampleProj.PushId.details.projectName,
+    //         description: sampleProj.PushId.details.description
+              
+    //       }
+    //       //PushId = this.project.sampleProj.PushId??
+    //     }
+      
+    //     get getDescription() {
+    //       return this.description
+    //     }
+    //     set setDescription(description) {
+    //         this.description = description
+    //     }
+
+    //     handleDescription(event) {
+    //     // Extract the current value of the customer from state
+    //     var updatedProj = this.project;
+      
+    //     // Extract the value of the input element represented by `target`
+    //     var modifiedValue = event.target.value;
+      
+    //     // Update the customer object's first name
+    //     updatedProj.description = modifiedValue;
+      
+    //     // Update the state object
+    //     this.setProject({
+    //       project: updatedProj
+    //     });
+    //   }
+    //     get getName() {
+    //         return this.project.name
+    //     }
+    //     // get getTags() {
+    //     //     return this.project.PushId.details.tags.list.PushId
+    //     // }
+    //     // set setTags(tags) {
+    //     //     this.project.tags = tags
+    //     // }
+    //     get getCharacters() {
+    //         return this.project.PushId.characters.list
+    //     }
+    //     get getStatus() {
+    //         return this.project.PushId.status
+    //     }
+
+        
+    //   };
+    
+    
+    // const proj = new ProjectData(sampleProj)
+
     const addChara = () => {
         let newChara = [
             "PushId3", {
@@ -73,7 +115,12 @@ export default function Project() {
   
     const removeChara = (index) => 
     {
-        setCharacters(characters.filter((_, i) => i !== index))
+        console.log("INDEX")
+        console.log(index)
+        let updated = characters.splice(index, 1);
+        console.log("UPDATED")
+        console.log(updated)
+        setCharacters(updated)
     };
 
     const [open, setOpen] = React.useState(false);
@@ -86,25 +133,46 @@ export default function Project() {
 
     useEffect(() =>
     {
+        console.log("IN USEEFFECT")
         console.log(characters)
     }, [characters])
 
+    useEffect(() =>
+    {
+        console.log("IN PROJECT")
+        console.log(projectDetails)
+    }, [projectDetails])
 
+    const handleDescription = (event) => {
+        setProjectDetails(projectDetails => ({
+            ...projectDetails,
+            description: event.target.value
+          }));
+    }
+
+ 
+    const handleName = (event) => {
+        setProjectDetails(projectDetails => ({
+            ...projectDetails,
+            projectName: event.target.value
+          }));
+    }
+
+ 
     return (
+        <ThemeProvider theme={theme}> 
         <div>
+            <Sidebar></Sidebar>
             <div>
-                <Toolbar sx={{ marginLeft: '18em' }}>
+           
+                <Toolbar sx={{ marginLeft: '18em', bgcolor: 'background.default' }}>
+               
                     <Grid container spacing={3}>
                         <Grid item xs={3}>
-                            <TextField 
+                            <TextField
+                            type="text"
                                 value={projectDetails.projectName}
-                                onChange={(e) =>
-                                    (prevState => ({
-                                        projectDetails: {                   // object that we want to update
-                                            ...prevState.projectDetails,    // keep all other key-value pairs
-                                            projectName: e.target.value       // update the value of specific key
-                                        }
-                                    }))}  
+                                onChange={handleName}   //use save function somehwere else?
                             >
                             </TextField>
                         </Grid>
@@ -117,31 +185,33 @@ export default function Project() {
                             <EmailModal />
                         </Grid>
                     </Grid>
-
+                    
                 </Toolbar>
+                
             </div>
-
+            
             <Box
                 component="main"
                 sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, marginLeft: '18em' }}>
                 <Grid container spacing={2}>
                     <Grid item xs={6} md={8}>
                         <TextField
-                            value={sampleProj.PushId.details.description}
+                            value={projectDetails.description}
                             multiline
                             rows={10}
                             fullWidth
+                            onChange={handleDescription}
                         />
                     </Grid>
                     <Grid item xs={6} md={4}>
                         <Box
                             sx={{ display: 'flex', marginRight: '2em', backgroundColor: 'beige' }}
                         >
-                            <Tags />
+                            <Tags projectDetails={projectDetails} setProjectDetails={setProjectDetails} />
                         </Box>
                         <br />
                         <Box>
-                            <ProjectStatus />
+                            <ProjectStatus projectDetails={projectDetails} setProjectDetails={setProjectDetails}/>
                         </Box>
 
                     </Grid>
@@ -166,5 +236,7 @@ export default function Project() {
                 <Button sx={{ backgroundColor: "#DED7C3", marginBottom: '2em' }} variant="contained" onClick={addChara}>Add Character</Button>
             </Box>
         </div>
+        </ThemeProvider>
+      
     );
 }
