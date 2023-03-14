@@ -8,7 +8,7 @@ import {
   remove,
   onValue,
 } from "firebase/database";
-import { app } from "../Firebase";
+import { app } from "../firebase";
 import { makeAutoObservable } from "mobx";
 export class TransportLayer {
   updateListeners = [];
@@ -61,14 +61,15 @@ export class TransportLayer {
 
   //RETURN json
   fetchProjects() {
-    return new Promise(() => {
-      const db = getDatabase(app);
-      const the_ref = query(ref(db, "/Projects"));
-      //const projectArray = [];
-      onValue(the_ref, (snapshot) => {
-        return snapshot.val();
-        //Object.keys(data).map((key) => (projectArray[key] = data[key]));
-      });
+    console.log("okay");
+    const db = getDatabase(app);
+    const the_ref = query(ref(db, "/Projects"));
+    console.log("okay2");
+    //const projectArray = [];
+    onValue(the_ref, (snapshot) => {
+      console.log("okay3");
+      return snapshot.val();
+      //Object.keys(data).map((key) => (projectArray[key] = data[key]));
     });
   }
 

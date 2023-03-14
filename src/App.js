@@ -12,7 +12,7 @@ const App = () => (
     <Routes>
       <Route path="/projectPage" element={<ProjectPage />} />
       <Route path="/projectDashboard" element={<ProjectDashboard />} />
-      <Route path="/MobXTest" element={<MobXTest />} />
+      <Route path="/mobxtest" element={<MobXTest />} />
     </Routes>
   </BrowserRouter>
 );

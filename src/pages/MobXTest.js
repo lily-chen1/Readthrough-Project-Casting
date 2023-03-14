@@ -4,6 +4,7 @@ import DataList from "./DataList";
 import rootStore from "../stores/rootStore";
 
 const PrintMobX = (mobxStore) => {
+  console.log(mobxStore.projectStore.isLoading);
   const [data, setData] = useState(mobxStore.getData());
 
   useEffect(() => {
@@ -21,6 +22,9 @@ const PrintMobX = (mobxStore) => {
 };
 
 function MobXTest() {
+  while (rootStore.projectStore.isLoading) {
+    return;
+  }
   const data = PrintMobX(rootStore);
 
   return <div>{data}</div>;

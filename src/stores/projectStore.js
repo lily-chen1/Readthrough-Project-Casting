@@ -22,20 +22,20 @@ export class ProjectStore {
     this.transportLayer.onReceiveProjectDelete(
       (project_id) => delete this.projects[project_id]
     );
-
+    console.log("what");
     this.loadProjects();
   }
 
   // Fetches all Projects from the server.
-  loadProjects() {
+  async loadProjects() {
     this.isLoading = true;
     this.projects = [];
-    console.log(this.transportLayer.fetchProjects());
-    this.transportLayer.fetchProjects().then((fetchedProjects) => {
-      runInAction(() => {
-        fetchedProjects.forEach((json) => this.updateProjectList(json));
-        this.isLoading = false;
-      });
+    console.log("what2");
+    let fetchedProjects = await this.transportLayer.fetchProjects();
+
+    runInAction(() => {
+      fetchedProjects.forEach((json) => this.updateProjectList(json));
+      this.isLoading = false;
     });
   }
 
