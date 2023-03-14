@@ -4,9 +4,11 @@ import {
   update,
   query,
   push,
+  get,
   set,
   remove,
   onValue,
+  child,
 } from "firebase/database";
 import { app } from "../firebase";
 import { makeAutoObservable } from "mobx";
@@ -59,18 +61,21 @@ export class TransportLayer {
     });
   }
 
-  //RETURN json
-  fetchProjects() {
-    console.log("okay");
-    const db = getDatabase(app);
-    const the_ref = query(ref(db, "/Projects"));
-    console.log("okay2");
-    //const projectArray = [];
-    onValue(the_ref, (snapshot) => {
-      console.log("okay3");
-      return snapshot.val();
-      //Object.keys(data).map((key) => (projectArray[key] = data[key]));
-    });
+  async fetchProjects() {
+    const dbRef = ref(getDatabase(app));
+    let data;
+    await get(child(dbRef, `projects/list`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          data = snapshot.val();
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    return data;
   }
 
   fetchUsers() {

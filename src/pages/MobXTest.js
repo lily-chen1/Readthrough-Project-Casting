@@ -4,27 +4,24 @@ import DataList from "./DataList";
 import rootStore from "../stores/rootStore";
 
 const PrintMobX = (mobxStore) => {
-  console.log(mobxStore.projectStore.isLoading);
-  const [data, setData] = useState(mobxStore.getData());
+  const [data, setData] = useState("test");
 
   useEffect(() => {
-    const disposer = mobxStore.subscribe(() => {
-      setData(mobxStore.getData());
-    });
-    return () => disposer();
+    setData(mobxStore.projectStore.projects);
   }, [mobxStore]);
 
+  while (mobxStore.projectStore.isLoading) {
+    return;
+  }
   return (
     <div>
+      {console.log(data)}
       <DataList data={data} />
     </div>
   );
 };
 
 function MobXTest() {
-  while (rootStore.projectStore.isLoading) {
-    return;
-  }
   const data = PrintMobX(rootStore);
 
   return <div>{data}</div>;

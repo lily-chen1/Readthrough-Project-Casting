@@ -22,7 +22,6 @@ export class ProjectStore {
     this.transportLayer.onReceiveProjectDelete(
       (project_id) => delete this.projects[project_id]
     );
-    console.log("what");
     this.loadProjects();
   }
 
@@ -30,8 +29,12 @@ export class ProjectStore {
   async loadProjects() {
     this.isLoading = true;
     this.projects = [];
-    console.log("what2");
     let fetchedProjects = await this.transportLayer.fetchProjects();
+
+    //temporary, remove this code later
+    this.projects.push(fetchedProjects);
+    this.isLoading = false;
+    return;
 
     runInAction(() => {
       fetchedProjects.forEach((json) => this.updateProjectList(json));
